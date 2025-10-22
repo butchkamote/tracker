@@ -4,13 +4,10 @@ import json
 import os
 from datetime import datetime, date
 import threading
-import webbrowser
 import schedule
 import time
 import subprocess
-import socket
 import sys
-import subprocess
 import traceback
 import base64
 import pandas as pd
@@ -171,10 +168,9 @@ def setup_static_folders():
             os.makedirs(dir_name)
 
 def open_browser():
-    """Open browser after a delay"""
-    import time
-    time.sleep(1.5)
-    webbrowser.open('http://localhost:4000')
+    """Open browser after a delay - disabled for production deployment"""
+    # Don't open browser in production/Render environment
+    pass
 
 # PDS Campaigns from your monthly flask app
 CAMPAIGNS = [
@@ -365,19 +361,11 @@ def open_output_folder():
         pds_output_dir = os.path.join(base_dir, "data", month_full, "OUTPUT_FOLDER", "PDS OUTPUT")
         
         if os.path.exists(pds_output_dir):
-            # Use os.system for cross-platform compatibility instead of os.startfile
-            if os.name == 'nt':  # Windows
-                os.startfile(pds_output_dir)
-            else:  # Linux/Mac
-                os.system(f'xdg-open "{pds_output_dir}"')
-            return jsonify({'status': 'success', 'message': 'PDS Output folder opened'})
+            # For web app, just return success - no need to open folders on server
+            return jsonify({'status': 'success', 'message': 'PDS Output folder exists', 'path': pds_output_dir})
         else:
             os.makedirs(pds_output_dir, exist_ok=True)
-            if os.name == 'nt':  # Windows
-                os.startfile(pds_output_dir)
-            else:  # Linux/Mac  
-                os.system(f'xdg-open "{pds_output_dir}"')
-            return jsonify({'status': 'success', 'message': 'PDS Output folder created and opened'})
+            return jsonify({'status': 'success', 'message': 'PDS Output folder created', 'path': pds_output_dir})
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)})
 
@@ -660,10 +648,9 @@ if __name__ == '__main__':
     setup_static_folders()
     
     print("🚀 Starting DA Process Progress Tracker...")
-    print("📡 Server will be accessible to your team at:")
-    print("   http://localhost:4000")
-    print("   http://YOUR_IP_ADDRESS:4000")
-    print("\n👥 Share this with your team on the same WiFi!")
+    print("📡 Server will be accessible at:")
+    print("   Local: http://localhost:4000")
+    print("\n👥 Share this with your team!")
     print("🔄 Auto-refreshes every 30 seconds")
     print("📊 Real-time progress tracking")
     print("⏰ Payment reminders at 12:00 PM & 8:00 PM")
@@ -672,8 +659,9 @@ if __name__ == '__main__':
     scheduler_thread = threading.Thread(target=run_scheduler, daemon=True)
     scheduler_thread.start()
     
-    # Open browser in background
-    threading.Thread(target=open_browser, daemon=True).start()
+    # Don't open browser in production
+    # threading.Thread(target=open_browser, daemon=True).start()
     
-    # Run Flask app
-    app.run(host='0.0.0.0', port=4000, debug=False)
+    # Run Flask app - let Render handle the port
+    port = int(os.environ.get('PORT', 4000))
+    app.run(host='0.0.0.0', port=port, debug=False)
