@@ -1,0 +1,261 @@
+{
+  "last_updated": "2025-10-22 12:05:19",
+  "tasks": {
+    "ENDORSEMENT_MAYA_MCC": {
+      "category": "ENDORSEMENT_MAYA",
+      "name": "MCC",
+      "status": "UPLOADED",
+      "assigned_to": "",
+      "last_updated": "2025-10-22 11:43:30",
+      "notes": ""
+    },
+    "ENDORSEMENT_MAYA_MPL": {
+      "category": "ENDORSEMENT_MAYA",
+      "name": "MPL",
+      "status": "PENDING",
+      "assigned_to": "",
+      "last_updated": "2025-10-18 17:31:16",
+      "notes": ""
+    },
+    "ENDORSEMENT_MAYA_MEC": {
+      "category": "ENDORSEMENT_MAYA",
+      "name": "MEC",
+      "status": "UPLOADED",
+      "assigned_to": "",
+      "last_updated": "2025-10-22 11:43:30",
+      "notes": ""
+    },
+    "ENDORSEMENT_OLA_SKYRO": {
+      "category": "ENDORSEMENT_OLA",
+      "name": "SKYRO",
+      "status": "N/A",
+      "assigned_to": "",
+      "last_updated": "2025-10-22 11:19:58",
+      "notes": ""
+    },
+    "ENDORSEMENT_OLA_OLP": {
+      "category": "ENDORSEMENT_OLA",
+      "name": "OLP",
+      "status": "N/A",
+      "assigned_to": "",
+      "last_updated": "2025-10-22 11:20:00",
+      "notes": ""
+    },
+    "ENDORSEMENT_OLA_PR": {
+      "category": "ENDORSEMENT_OLA",
+      "name": "PR",
+      "status": "N/A",
+      "assigned_to": "",
+      "last_updated": "2025-10-22 11:20:00",
+      "notes": ""
+    },
+    "ENDORSEMENT_OLA_KVIKU": {
+      "category": "ENDORSEMENT_OLA",
+      "name": "KVIKU",
+      "status": "UPLOADED",
+      "assigned_to": "kr",
+      "last_updated": "2025-10-22 11:21:36",
+      "notes": ""
+    },
+    "ENDORSEMENT_OLA_HONEYLOAN": {
+      "category": "ENDORSEMENT_OLA",
+      "name": "HONEYLOAN",
+      "status": "UPLOADED",
+      "assigned_to": "KR",
+      "last_updated": "2025-10-22 11:21:40",
+      "notes": ""
+    },
+    "ENDORSEMENT_OLA_PITACASH": {
+      "category": "ENDORSEMENT_OLA",
+      "name": "PITACASH",
+      "status": "N/A",
+      "assigned_to": "",
+      "last_updated": "2025-10-22 11:20:08",
+      "notes": ""
+    },
+    "ENDORSEMENT_OLA_TALA": {
+      "category": "ENDORSEMENT_OLA",
+      "name": "TALA",
+      "status": "UPLOADED",
+      "assigned_to": "KR",
+      "last_updated": "2025-10-22 11:21:44",
+      "notes": ""
+    },
+    "ENDORSEMENT_OLA_TALACARE": {
+      "category": "ENDORSEMENT_OLA",
+      "name": "TALACARE",
+      "status": "UPLOADED",
+      "assigned_to": "KR",
+      "last_updated": "2025-10-22 11:21:46",
+      "notes": ""
+    },
+    "ENDORSEMENT_OLA_SALMON": {
+      "category": "ENDORSEMENT_OLA",
+      "name": "SALMON",
+      "status": "UPLOADED",
+      "assigned_to": "KR",
+      "last_updated": "2025-10-22 11:21:48",
+      "notes": ""
+    },
+    "ENDORSEMENT_OLA_NETBANK": {
+      "category": "ENDORSEMENT_OLA",
+      "name": "NETBANK",
+      "status": "N/A",
+      "assigned_to": "",
+      "last_updated": "2025-10-22 12:04:53",
+      "notes": ""
+    },
+    "ENDORSEMENT_OLA_AKULAKU": {
+      "category": "ENDORSEMENT_OLA",
+      "name": "AKULAKU",
+      "status": "UPLOADED",
+      "assigned_to": "jobert",
+      "last_updated": "2025-10-22 11:21:51",
+      "notes": ""
+    },
+    "LOXON_MAYA": {
+      "category": "LOXON",
+      "name": "MAYA",
+      "status": "UPLOADED",
+      "assigned_to": "jobert",
+      "last_updated": "2025-10-22 11:45:22",
+      "notes": ""
+    },
+    "DCA_MAYA_MEC": {
+      "category": "DCA_MAYA",
+      "name": "MEC",
+      "status": "PENDING",
+      "assigned_to": "NIGGA",
+      "last_updated": "2025-10-22 12:03:32",
+      "notes": ""
+    },
+    "DCA_MAYA_MPL": {
+      "category": "DCA_MAYA",
+      "name": "MPL",
+      "status": "PENDING",
+      "assigned_to": "NIGGA",
+      "last_updated": "2025-10-22 12:03:34",
+      "notes": ""
+    },
+    "DCA_MAYA_MCC": {
+      "category": "DCA_MAYA",
+      "name": "MCC",
+      "status": "PENDING",
+      "assigned_to": "NMIGGA",
+      "last_updated": "2025-10-22 12:03:36",
+      "notes": ""
+    },
+    "PAYMENTS_MAYA_MCC": {
+      "category": "PAYMENTS_MAYA",
+      "name": "MCC",
+      "status": "UPLOADED",
+      "assigned_to": "n",
+      "last_updated": "2025-10-22 12:04:43",
+      "notes": ""
+    },
+    "PAYMENTS_MAYA_MPL": {
+      "category": "PAYMENTS_MAYA",
+      "name": "MPL",
+      "status": "PENDING",
+      "assigned_to": "",
+      "last_updated": "2025-10-22 12:03:49",
+      "notes": ""
+    },
+    "PAYMENTS_MAYA_MEC": {
+      "category": "PAYMENTS_MAYA",
+      "name": "MEC",
+      "status": "UPLOADED",
+      "assigned_to": "",
+      "last_updated": "2025-10-22 12:04:52",
+      "notes": ""
+    },
+    "PAYMENTS_OLA_SKYRO": {
+      "category": "PAYMENTS_OLA",
+      "name": "SKYRO",
+      "status": "N/A",
+      "assigned_to": "",
+      "last_updated": "2025-10-22 12:04:18",
+      "notes": ""
+    },
+    "PAYMENTS_OLA_OLP": {
+      "category": "PAYMENTS_OLA",
+      "name": "OLP",
+      "status": "UPLOADED",
+      "assigned_to": "",
+      "last_updated": "2025-10-22 12:05:02",
+      "notes": ""
+    },
+    "PAYMENTS_OLA_PR": {
+      "category": "PAYMENTS_OLA",
+      "name": "PR",
+      "status": "N/A",
+      "assigned_to": "",
+      "last_updated": "2025-10-22 12:05:06",
+      "notes": ""
+    },
+    "PAYMENTS_OLA_KVIKU": {
+      "category": "PAYMENTS_OLA",
+      "name": "KVIKU",
+      "status": "UPLOADED",
+      "assigned_to": "",
+      "last_updated": "2025-10-22 12:05:08",
+      "notes": ""
+    },
+    "PAYMENTS_OLA_HONEYLOAN": {
+      "category": "PAYMENTS_OLA",
+      "name": "HONEYLOAN",
+      "status": "UPLOADED",
+      "assigned_to": "",
+      "last_updated": "2025-10-22 12:05:08",
+      "notes": ""
+    },
+    "PAYMENTS_OLA_PITACASH": {
+      "category": "PAYMENTS_OLA",
+      "name": "PITACASH",
+      "status": "N/A",
+      "assigned_to": "",
+      "last_updated": "2025-10-22 12:04:05",
+      "notes": ""
+    },
+    "PAYMENTS_OLA_TALA": {
+      "category": "PAYMENTS_OLA",
+      "name": "TALA",
+      "status": "UPLOADED",
+      "assigned_to": "",
+      "last_updated": "2025-10-22 12:05:18",
+      "notes": ""
+    },
+    "PAYMENTS_OLA_TALACARE": {
+      "category": "PAYMENTS_OLA",
+      "name": "TALACARE",
+      "status": "N/A",
+      "assigned_to": "",
+      "last_updated": "2025-10-22 12:04:08",
+      "notes": ""
+    },
+    "PAYMENTS_OLA_SALMON": {
+      "category": "PAYMENTS_OLA",
+      "name": "SALMON",
+      "status": "UPLOADED",
+      "assigned_to": "",
+      "last_updated": "2025-10-22 12:05:19",
+      "notes": ""
+    },
+    "PAYMENTS_OLA_NETBANK": {
+      "category": "PAYMENTS_OLA",
+      "name": "NETBANK",
+      "status": "N/A",
+      "assigned_to": "",
+      "last_updated": "2025-10-22 12:04:12",
+      "notes": ""
+    },
+    "PAYMENTS_OLA_AKULAKU": {
+      "category": "PAYMENTS_OLA",
+      "name": "AKULAKU",
+      "status": "N/A",
+      "assigned_to": "",
+      "last_updated": "2025-10-22 12:04:11",
+      "notes": ""
+    }
+  }
+}

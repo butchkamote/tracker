@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DA Team - Progress Tracker</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-glass fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-chart-line"></i> DA Process Hub
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">
+                            <i class="fas fa-tachometer-alt"></i> Progress Tracker
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pds_maker">
+                            <i class="fas fa-file-alt"></i> PDS Maker
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/loxon">
+                            <i class="fas fa-exchange-alt"></i> LOXON
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="toolsDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-tools"></i> Tools
+                        </a>
+                        <ul class="dropdown-menu glass-dropdown">
+                            <li><a class="dropdown-item" href="/open_output_folder">
+                                <i class="fas fa-folder-open"></i> Open Output Folder
+                            </a></li>
+                            <li><a class="dropdown-item" href="/check_endo_folder">
+                                <i class="fas fa-search"></i> Check ENDO Folder
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/create_endo_folder">
+                                <i class="fas fa-plus"></i> Create ENDO Folder
+                            </a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <span class="navbar-text">
+                            <i class="fas fa-clock"></i> <span id="currentTime"></span>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container main-content">
+        <div class="row">
+            <div class="col-12">
+                <div class="header">
+                    <h1><i class="fas fa-chart-line"></i> DA Team - Progress Tracker</h1>
+                    <p class="text-muted mb-0">Real-time status monitoring for optimal workflow management</p>
+                </div>
+            
+
+                <!-- Payment Reminder Section -->
+                <div class="reminder-section glass-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-1"><i class="fas fa-bell"></i> Payment Reminders</h5>
+                            <p class="mb-0">Automatic alerts at <strong>12:00 PM</strong> and <strong>8:00 PM</strong></p>
+                        </div>
+                        <button class="btn btn-warning" onclick="triggerReminder()">
+                            <i class="fas fa-bell"></i> Manual Reminder
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Summary Dashboard -->
+                <div class="progress-summary glass-card">
+                    <div class="row g-4">
+                        <div class="col-lg">
+                            <div class="summary-card" style="border-bottom: 5px solid #ffc107;">
+                                <h4 class="text-warning">{{ data.tasks.values() | selectattr('status', 'equalto', 'PENDING') | list | length }}</h4>
+                                <small><i class="fas fa-hourglass-start"></i> PENDING</small>
+                            </div>
+                        </div>
+                        <div class="col-lg">
+                            <div class="summary-card" style="border-bottom: 5px solid #17a2b8;">
+                                <h4 class="text-info">{{ data.tasks.values() | selectattr('status', 'equalto', 'DOWNLOADED') | list | length }}</h4>
+                                <small><i class="fas fa-download"></i> DOWNLOADED</small>
+                            </div>
+                        </div>
+                        <div class="col-lg">
+                            <div class="summary-card" style="border-bottom: 5px solid #fd7e14;">
+                                <h4 class="text-warning">{{ data.tasks.values() | selectattr('status', 'equalto', 'PROCESSED') | list | length }}</h4>
+                                <small><i class="fas fa-cog"></i> PROCESSED</small>
+                            </div>
+                        </div>
+                        <div class="col-lg">
+                            <div class="summary-card" style="border-bottom: 5px solid #28a745;">
+                                <h4 class="text-success">{{ data.tasks.values() | selectattr('status', 'equalto', 'UPLOADED') | list | length }}</h4>
+                                <small><i class="fas fa-cloud-upload-alt"></i> UPLOADED</small>
+                            </div>
+                        </div>
+                        <div class="col-lg">
+                            <div class="summary-card" style="border-bottom: 5px solid #6c757d;">
+                                <h4 class="text-muted">{{ data.tasks.values() | selectattr('status', 'equalto', 'N/A') | list | length }}</h4>
+                                <small><i class="fas fa-ban"></i> N/A</small>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-4" style="opacity: 0.1;">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">Last Updated: {{ data.last_updated }}</small>
+                        <a href="/reset_all" class="btn btn-outline-danger">
+                            <i class="fas fa-redo-alt"></i> Reset All
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Task Categories -->
+                {% for category, items in categories.items() %}
+                <div class="category-section" data-category="{{ category }}">
+                    <div class="category-header {% if 'PAYMENTS' in category %}payment-alert{% endif %}">
+                        <h3>
+                            {% if category == 'ENDORSEMENT_MAYA' %}<i class="fas fa-university"></i> ENDORSEMENT - MAYA
+                            {% elif category == 'ENDORSEMENT_OLA' %}<i class="fas fa-building"></i> ENDORSEMENT - OLA
+                            {% elif category == 'LOXON' %}<i class="fas fa-bullseye"></i> LOXON
+                            {% elif category == 'DCA_MAYA' %}<i class="fas fa-clipboard-list"></i> DCA - MAYA
+                            {% elif category == 'PAYMENTS_MAYA' %}<i class="fas fa-money-bill-wave"></i> PAYMENTS - MAYA
+                            {% elif category == 'PAYMENTS_OLA' %}<i class="fas fa-credit-card"></i> PAYMENTS - OLA
+                            {% else %}<i class="fas fa-folder"></i> {{ category }}
+                            {% endif %}
+                        </h3>
+                        <div class="d-flex align-items-center gap-3">
+                            {% if 'PAYMENTS' in category %}
+                            <small><i class="fas fa-exclamation-triangle"></i> Reminder alerts at 12:00 PM & 8:00 PM</small>
+                            {% endif %}
+                            <button class="btn btn-sm btn-outline-light collapse-btn" onclick="toggleCategory('{{ category }}')">
+                                <i class="fas fa-chevron-up"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-4 mb-5 category-content" id="category-{{ category }}">
+                        {% for item in items %}
+                        {% set task_key = category + '_' + item %}
+                        {% set task = data.tasks[task_key] %}
+                        <div class="col-md-4 task-item" data-task-name="{{ item|lower }}">
+                            <div class="glass-card task-card {% if 'PAYMENTS' in category and (task['status'] not in ['UPLOADED','N/A']) %}payment-alert{% endif %}">
+                                <div class="card-title">
+                                    {{ item }}
+                                    <span class="status-badge" style="background-color: {{ colors[task['status']] }}">
+                                        {% if task['status'] == 'PENDING' %}<i class="fas fa-hourglass-start"></i>
+                                        {% elif task['status'] == 'DOWNLOADED' %}<i class="fas fa-download"></i>
+                                        {% elif task['status'] == 'PROCESSED' %}<i class="fas fa-cog"></i>
+                                        {% elif task['status'] == 'UPLOADED' %}<i class="fas fa-cloud-upload-alt"></i>
+                                        {% elif task['status'] == 'N/A' %}<i class="fas fa-ban"></i>
+                                        {% endif %}
+                                        {{ task['status'] }}
+                                    </span>
+                                </div>
+                                
+                                <!-- Status Update Buttons -->
+                                <div class="btn-group-vertical d-grid gap-1">
+                                    {% for status in statuses %}
+                                    <button class="btn btn-sm btn-outline-secondary update-btn"
+                                            data-task="{{ task_key }}" 
+                                            data-status="{{ status }}"
+                                            {% if task['status'] == status %}disabled{% endif %}>
+                                        {% if status == 'PENDING' %}<i class="fas fa-hourglass-start"></i>
+                                        {% elif status == 'DOWNLOADED' %}<i class="fas fa-download"></i>
+                                        {% elif status == 'PROCESSED' %}<i class="fas fa-cog"></i>
+                                        {% elif status == 'UPLOADED' %}<i class="fas fa-cloud-upload-alt"></i>
+                                        {% elif status == 'N/A' %}<i class="fas fa-ban"></i>
+                                        {% endif %}
+                                        {{ status }}
+                                    </button>
+                                    {% endfor %}
+                                </div>
+                                
+                                <!-- Assigned To -->
+                                <div class="input-group mt-3 mb-2">
+                                    <span class="input-group-text" style="border-radius: 12px 0 0 12px; background: rgba(255,255,255,0.6);">
+                                        <i class="fas fa-user"></i>
+                                    </span>
+                                    <input type="text" class="form-control assigned-input"
+                                           placeholder="Assigned to..." 
+                                           value="{{ task['assigned_to'] }}"
+                                           data-task="{{ task_key }}">
+                                </div>
+                                
+                                <!-- Notes -->
+                                <div class="input-group mb-2">
+                                    <span class="input-group-text" style="border-radius: 12px 0 0 12px; background: rgba(255,255,255,0.6);">
+                                        <i class="fas fa-sticky-note"></i>
+                                    </span>
+                                    <textarea class="form-control notes-input" 
+                                              rows="2" 
+                                              placeholder="Notes..."
+                                              data-task="{{ task_key }}">{{ task['notes'] }}</textarea>
+                                </div>
+                                
+                                {% if task['last_updated'] %}
+                                <small class="text-muted d-block mt-2">
+                                    <i class="fas fa-history"></i> Updated: {{ task['last_updated'] }}
+                                </small>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

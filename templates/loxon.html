@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOXON - File Transfer Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding-top: 76px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background: rgba(255,255,255,0.1) !important;
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand, .nav-link {
+            color: white !important;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: #ffd700 !important;
+            transform: translateY(-2px);
+        }
+        
+        .glass-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            background: rgba(255,255,255,0.15);
+        }
+        
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+        }
+        
+        .tile-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+        
+        .glass-card h5 {
+            color: white;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .glass-card p {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+        }
+        
+        .btn-glass {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            font-weight: 600;
+            padding: 12px 24px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .btn-glass:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+            color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .btn-glass:disabled {
+            background: rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.5);
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .file-upload {
+            border: 2px dashed rgba(255,255,255,0.3);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .file-upload:hover {
+            border-color: rgba(255,215,0,0.6);
+            background: rgba(255,215,0,0.1);
+        }
+        
+        .file-upload label {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .file-upload label:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .status-display {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            min-height: 120px;
+            padding: 20px;
+        }
+        
+        .status-display h5 {
+            color: white;
+            font-weight: 700;
+        }
+        
+        .month-input {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 25px;
+            padding: 10px 20px;
+            color: white;
+            text-align: center;
+        }
+        
+        .month-input::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+        
+        .month-input:focus {
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(255,215,0,0.6);
+            color: white;
+            box-shadow: 0 0 20px rgba(255,215,0,0.3);
+        }
+        
+        .processing {
+            display: none;
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .spinner-border {
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+        
+        .badge {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(10px);
+            padding: 8px 12px;
+            border-radius: 20px;
+        }
+        
+        .badge.bg-success {
+            background: rgba(40,167,69,0.3) !important;
+            border-color: rgba(40,167,69,0.5);
+        }
+        
+        .badge.bg-secondary {
+            background: rgba(108,117,125,0.3) !important;
+            border-color: rgba(108,117,125,0.5);
+        }
+        
+        .creator-badge {
+            position: fixed;
+            top: 10px;
+            right: 15px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 1000;
+        }
+        
+        .prerequisite-info {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.6);
+            margin-top: 8px;
+        }
+        
+        .title-glow {
+            color: white;
+            text-shadow: 0 0 20px rgba(255,215,0,0.5);
+            font-weight: 800;
+        }
+        
+        .disabled-tile {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        
+        .alert {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 15px;
+            color: white;
+        }
+        
+        .list-unstyled li {
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 5px;
+        }
+        
+        .list-unstyled li i {
+            color: #ffd700;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/loxon">
+                <i class="fas fa-exchange-alt me-2"></i>LOXON
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Progress Tracker</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pds_maker">PDS Maker</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/loxon">LOXON</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <h1 class="title-glow mb-3">
+                    <i class="fas fa-file-export me-3"></i>LOXON File Transfer Dashboard
+                </h1>
+                <p class="text-white-50">Automated File Collection & Distribution System</p>
+            </div>
+        </div>
+
+        <!-- Status Display -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="status-display" id="statusDisplay">
+                    <h5><i class="fas fa-info-circle text-warning me-2"></i>Transfer Status</h5>
+                    <div id="statusContent">
+                        <p class="mb-0 text-white-50">Ready for file operations...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- File Transfer Tiles Row 1 -->
+        <div class="row g-4">
+            <!-- Tile 1: Upload PTP & CRM -->
+            <div class="col-md-6 col-lg-3">
+                <div class="glass-card p-4 text-center">
+                    <div class="tile-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h5 class="mb-3">Upload PTP & CRM</h5>
+                    <p class="small mb-3">Upload and distribute PTP & CRM files (Excel/CSV) to multiple directories</p>
+                    
+                    <div class="file-upload mb-3">
+                        <input type="file" id="ptpFile" accept=".xlsx,.xls,.csv" class="d-none">
+                        <label for="ptpFile" class="btn btn-sm mb-2">
+                            <i class="fas fa-file me-1"></i>Select PTP File
+                        </label>
+                        <div id="ptpFileName" class="small text-white-50 mt-1"></div>
+                    </div>
+                    
+                    <div class="file-upload mb-3">
+                        <input type="file" id="crmFile" accept=".xlsx,.xls,.csv" class="d-none">
+                        <label for="crmFile" class="btn btn-sm mb-2">
+                            <i class="fas fa-file me-1"></i>Select CRM File
+                        </label>
+                        <div id="crmFileName" class="small text-white-50 mt-1"></div>
+                    </div>
+                    
+                    <button class="btn btn-glass" onclick="uploadPtpCrm()">
+                        <i class="fas fa-upload me-2"></i>Upload Files
+                    </button>
+                    <div class="processing mt-2" id="processing1">
+                        <div class="spinner-border spinner-border-sm me-2"></div>
+                        <span>Processing...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tile 2: Collect Digital Files -->
+            <div class="col-md-6 col-lg-3">
+                <div class="glass-card p-4 text-center">
+                    <div class="tile-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h5 class="mb-3">Collect Digital Files</h5>
+                    <p class="small mb-3">Automatically collect agent files from Y: drive</p>
+                    <ul class="list-unstyled small text-start mb-3">
+                        <li><i class="fas fa-user me-2"></i>Agent Rea</li>
+                        <li><i class="fas fa-user me-2"></i>Agent Gina</li>
+                        <li><i class="fas fa-user me-2"></i>Agent Mark Julius</li>
+                    </ul>
+                    
+                    <button class="btn btn-glass" onclick="collectDigital()">
+                        <i class="fas fa-download me-2"></i>Collect Files
+                    </button>
+                    <div class="processing mt-2" id="processing2">
+                        <div class="spinner-border spinner-border-sm me-2"></div>
+                        <span>Processing...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tile 3: Collect ENDO Files -->
+            <div class="col-md-6 col-lg-3">
+                <div class="glass-card p-4 text-center">
+                    <div class="tile-icon">
+                        <i class="fas fa-folder-open"></i>
+                    </div>
+                    <h5 class="mb-3">Collect ENDO Files</h5>
+                    <p class="small mb-3">Collect endorsement files by date and month</p>
+                    
+                    <div class="mb-3">
+                        <input type="text" id="monthInput" class="form-control month-input" 
+                               placeholder="Month (e.g., SEP, OCT)" maxlength="3">
+                        <small class="text-white-50">Leave blank for current month</small>
+                    </div>
+                    
+                    <button class="btn btn-glass" onclick="collectEndo()">
+                        <i class="fas fa-search me-2"></i>Collect ENDO
+                    </button>
+                    <div class="processing mt-2" id="processing3">
+                        <div class="spinner-border spinner-border-sm me-2"></div>
+                        <span>Processing...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tile 4: Collect HOME_KVB Files -->
+            <div class="col-md-6 col-lg-3">
+                <div class="glass-card p-4 text-center">
+                    <div class="tile-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <h5 class="mb-3">Collect HOME_KVB</h5>
+                    <p class="small mb-3">Collect payment files from HOME_KVB directory</p>
+                    <ul class="list-unstyled small text-start mb-3">
+                        <li><i class="fas fa-file-excel me-2"></i>CREDIT_OCT.xlsx</li>
+                        <li><i class="fas fa-file-excel me-2"></i>MPL_OCT.xlsx</li>
+                        <li><i class="fas fa-file-excel me-2"></i>MCC_OCT.xlsx</li>
+                    </ul>
+                    
+                    <button class="btn btn-glass" onclick="collectHomeKvb()">
+                        <i class="fas fa-copy me-2"></i>Collect Files
+                    </button>
+                    <div class="processing mt-2" id="processing4">
+                        <div class="spinner-border spinner-border-sm me-2"></div>
+                        <span>Processing...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- File Transfer Tiles Row 2 -->
+        <div class="row g-4 mt-2">
+            <!-- Tile 5: Upload SQL -->
+            <div class="col-md-6 col-lg-3">
+                <div class="glass-card p-4 text-center">
+                    <div class="tile-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h5 class="mb-3">Upload SQL PYTHON FILE</h5>
+                    <p class="small mb-3">Mark as completed after running upload_sql.py manually</p>
+                    
+                    <button class="btn btn-glass" onclick="markUploadSqlDone()" id="uploadSqlBtn">
+                        <i class="fas fa-check me-2"></i>DONE
+                    </button>
+                    
+                    <div class="mt-2">
+                        <span class="badge" id="uploadSqlStatus">Not Completed</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tile 6: MICROSOFT SQL -->
+            <div class="col-md-6 col-lg-3">
+                <div class="glass-card p-4 text-center" id="microsoftSqlTile">
+                    <div class="tile-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <h5 class="mb-3">MICROSOFT SQL</h5>
+                    <p class="small mb-3">Execute SQL Server operations and queries</p>
+                    
+                    <button class="btn btn-glass" onclick="runMicrosoftSql()" id="microsoftSqlBtn" disabled>
+                        <i class="fas fa-play me-2"></i>Execute SQL
+                    </button>
+                    
+                    <div class="processing mt-2" id="processing6">
+                        <div class="spinner-border spinner-border-sm me-2"></div>
+                        <span>Processing...</span>
+                    </div>
+                    
+                    <div class="prerequisite-info">
+                        <small>Requires: Upload SQL</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tile 7: Inventory -->
+            <div class="col-md-6 col-lg-3">
+                <div class="glass-card p-4 text-center" id="inventoryTile">
+                    <div class="tile-icon">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <h5 class="mb-3">Inventory</h5>
+                    <p class="small mb-3">Generate and manage inventory reports</p>
+                    
+                    <button class="btn btn-glass" onclick="runInventory()" id="inventoryBtn" disabled>
+                        <i class="fas fa-chart-bar me-2"></i>Generate Report
+                    </button>
+                    <div class="processing mt-2" id="processing7">
+                        <div class="spinner-border spinner-border-sm me-2"></div>
+                        <span>Processing...</span>
+                    </div>
+                    <div class="prerequisite-info">
+                        <small>Requires: Upload SQL + Microsoft SQL</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tile 8: LOXON Process -->
+            <div class="col-md-6 col-lg-3">
+                <div class="glass-card p-4 text-center" id="loxonTile">
+                    <div class="tile-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h5 class="mb-3">LOXON Process</h5>
+                    <p class="small mb-3">Execute main LOXON processing workflow</p>
+                    
+                    <button class="btn btn-glass" onclick="runLoxonProcess()" id="loxonBtn" disabled>
+                        <i class="fas fa-rocket me-2"></i>Start Process
+                    </button>
+                    <div class="processing mt-2" id="processing8">
+                        <div class="spinner-border spinner-border-sm me-2"></div>
+                        <span>Processing...</span>
+                    </div>
+                    <div class="prerequisite-info">
+                        <small>Requires: Upload SQL + Microsoft SQL + Inventory</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Controls -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="glass-card p-4 text-center">
+                    <h6><i class="fas fa-chart-bar me-2"></i>System Controls</h6>
+                    <button class="btn btn-glass btn-sm me-2" onclick="checkStatus()">
+                        <i class="fas fa-sync me-1"></i>Check Status
+                    </button>
+                    <button class="btn btn-glass btn-sm" onclick="resetAllProgress()">
+                        <i class="fas fa-redo me-1"></i>Reset Progress
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Creator Badge -->
+    <div class="creator-badge">
+        <i class="fas fa-code me-1"></i>Made by DA KEVIN BENAVIDEZ
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/loxon.js') }}"></script>
+</body>
+</html>
