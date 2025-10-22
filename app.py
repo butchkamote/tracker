@@ -203,8 +203,9 @@ def check_endo_folder():
     day = today.strftime('%d')
     
     endo_folder = f"ENDO_{year}{month_abbr}{day}"
-    base_dir = r"C:\Users\Windows 11Pro\OneDrive\DA_PROCESS"
-    month_dir = os.path.join(base_dir, month_full)
+    # Use relative path from project root
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    month_dir = os.path.join(base_dir, "data", month_full)
     endo_base = os.path.join(month_dir, "ENDO_FILE_MAYA")
     endo_path = os.path.join(endo_base, endo_folder)
     
@@ -271,14 +272,15 @@ def run_script(campaign_name):
     if not campaign:
         return jsonify({'status': 'error', 'message': 'Campaign not found'})
 
-    # Point to the correct SCRIPTS directory
-    scripts_dir = r"C:\Users\Windows 11Pro\OneDrive\DA_PROCESS\Test Scripts\Progress Tracker\SCRIPTS"
+    # Use relative path from project root for scripts
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    scripts_dir = os.path.join(base_dir, "PDS TEMPLATES", "SCRIPTS")
     script_path = os.path.join(scripts_dir, f"{campaign_name.lower()}.py")
     
     # Create PDS OUTPUT folder
     today = datetime.today()
     month_full = today.strftime('%B').upper()
-    pds_output_dir = os.path.join(r"C:\Users\Windows 11Pro\OneDrive\DA_PROCESS", month_full, "OUTPUT_FOLDER", "PDS OUTPUT")
+    pds_output_dir = os.path.join(base_dir, "data", month_full, "OUTPUT_FOLDER", "PDS OUTPUT")
     
     try:
         # Check if script file exists
@@ -358,16 +360,23 @@ def open_output_folder():
         today = datetime.today()
         month_full = today.strftime('%B').upper()
         
-        # Updated to open PDS OUTPUT folder
-        base_dir = r"C:\Users\Windows 11Pro\OneDrive\DA_PROCESS"
-        pds_output_dir = os.path.join(base_dir, month_full, "OUTPUT_FOLDER", "PDS OUTPUT")
+        # Use relative path from project root
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        pds_output_dir = os.path.join(base_dir, "data", month_full, "OUTPUT_FOLDER", "PDS OUTPUT")
         
         if os.path.exists(pds_output_dir):
-            os.startfile(pds_output_dir)
+            # Use os.system for cross-platform compatibility instead of os.startfile
+            if os.name == 'nt':  # Windows
+                os.startfile(pds_output_dir)
+            else:  # Linux/Mac
+                os.system(f'xdg-open "{pds_output_dir}"')
             return jsonify({'status': 'success', 'message': 'PDS Output folder opened'})
         else:
             os.makedirs(pds_output_dir, exist_ok=True)
-            os.startfile(pds_output_dir)
+            if os.name == 'nt':  # Windows
+                os.startfile(pds_output_dir)
+            else:  # Linux/Mac  
+                os.system(f'xdg-open "{pds_output_dir}"')
             return jsonify({'status': 'success', 'message': 'PDS Output folder created and opened'})
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)})
@@ -426,8 +435,9 @@ def loxon_run_microsoft_sql():
         
         # Placeholder for actual SQL operations
         # You can add your SQL script execution here
-        result = subprocess.run([sys.executable, 'scripts/microsoft_sql.py'], 
-                              capture_output=True, text=True, cwd=os.getcwd())
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        result = subprocess.run([sys.executable, os.path.join(base_dir, 'PDS TEMPLATES', 'SCRIPTS', 'microsoft_sql.py')], 
+                              capture_output=True, text=True, cwd=base_dir)
         
         if result.returncode == 0:
             loxon_progress['microsoft_sql'] = True
@@ -460,8 +470,9 @@ def loxon_run_inventory():
             }), 400
         
         # Placeholder for inventory script
-        result = subprocess.run([sys.executable, 'scripts/inventory.py'], 
-                              capture_output=True, text=True, cwd=os.getcwd())
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        result = subprocess.run([sys.executable, os.path.join(base_dir, 'PDS TEMPLATES', 'SCRIPTS', 'inventory.py')], 
+                              capture_output=True, text=True, cwd=base_dir)
         
         if result.returncode == 0:
             loxon_progress['inventory'] = True
@@ -495,8 +506,9 @@ def loxon_run_loxon_process():
             }), 400
         
         # Placeholder for main LOXON process
-        result = subprocess.run([sys.executable, 'scripts/loxon_process.py'], 
-                              capture_output=True, text=True, cwd=os.getcwd())
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        result = subprocess.run([sys.executable, os.path.join(base_dir, 'PDS TEMPLATES', 'SCRIPTS', 'loxon_process.py')], 
+                              capture_output=True, text=True, cwd=base_dir)
         
         if result.returncode == 0:
             loxon_progress['loxon_process'] = True

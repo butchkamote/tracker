@@ -1,7 +1,8 @@
-# Minimal dependencies for a Flask app served with Gunicorn (Render)
+# Dependencies for Flask app served with Gunicorn (Render)
 Flask>=2.0,<4.0
 gunicorn>=20.1.0
 python-dotenv>=1.0.0
 openpyxl>=3.0
 pandas>=2.0
 schedule>=1.1.0
+Werkzeug>=2.0
