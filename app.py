@@ -191,24 +191,24 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def check_endo_folder():
-    """Check if today's ENDO folder exists"""
+    """Check uploads folder for uploaded files"""
     today = datetime.today()
     year = today.year
     month_abbr = today.strftime('%b').upper()
-    month_full = today.strftime('%B').upper()
     day = today.strftime('%d')
     
     endo_folder = f"ENDO_{year}{month_abbr}{day}"
-    # Use relative path from project root
+    # Use uploads folder in project root
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    month_dir = os.path.join(base_dir, "data", month_full)
-    endo_base = os.path.join(month_dir, "ENDO_FILE_MAYA")
-    endo_path = os.path.join(endo_base, endo_folder)
+    uploads_dir = os.path.join(base_dir, "uploads")
+    
+    # Create uploads directory if it doesn't exist
+    os.makedirs(uploads_dir, exist_ok=True)
     
     return {
-        'exists': os.path.exists(endo_path),
+        'exists': True,  # Always true since we create it
         'folder_name': endo_folder,
-        'full_path': endo_path,
+        'full_path': uploads_dir,
         'date': today.strftime('%B %d, %Y')
     }
 
@@ -369,14 +369,84 @@ def open_output_folder():
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)})
 
+@app.route('/list_uploads')
+def list_uploads():
+    """List all files in the uploads folder"""
+    try:
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        uploads_dir = os.path.join(base_dir, "uploads")
+        
+        if not os.path.exists(uploads_dir):
+            os.makedirs(uploads_dir, exist_ok=True)
+            return jsonify({'status': 'success', 'files': [], 'message': 'Uploads folder created'})
+        
+        files = []
+        for filename in os.listdir(uploads_dir):
+            if os.path.isfile(os.path.join(uploads_dir, filename)):
+                file_path = os.path.join(uploads_dir, filename)
+                file_size = os.path.getsize(file_path)
+                file_modified = datetime.fromtimestamp(os.path.getmtime(file_path)).strftime('%Y-%m-%d %H:%M:%S')
+                
+                files.append({
+                    'name': filename,
+                    'size': f"{file_size / 1024:.1f} KB",
+                    'modified': file_modified
+                })
+        
+        return jsonify({'status': 'success', 'files': files, 'total': len(files)})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
+
+@app.route('/upload_to_folder', methods=['POST'])
+def upload_to_folder():
+    """Upload files directly to the uploads folder"""
+    try:
+        if 'file' not in request.files:
+            return jsonify({'status': 'error', 'message': 'No file selected'}), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'status': 'error', 'message': 'No file selected'}), 400
+        
+        if not allowed_file(file.filename):
+            return jsonify({'status': 'error', 'message': 'File type not allowed. Use CSV, XLS, or XLSX files.'}), 400
+        
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        uploads_dir = os.path.join(base_dir, "uploads")
+        os.makedirs(uploads_dir, exist_ok=True)
+        
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(uploads_dir, filename)
+        
+        # Handle duplicate files
+        base_name, ext = os.path.splitext(filename)
+        counter = 1
+        while os.path.exists(file_path):
+            new_filename = f"{base_name}({counter}){ext}"
+            file_path = os.path.join(uploads_dir, new_filename)
+            filename = new_filename
+            counter += 1
+        
+        file.save(file_path)
+        
+        return jsonify({
+            'status': 'success',
+            'message': f'File uploaded successfully: {filename}',
+            'filename': filename,
+            'path': file_path
+        })
+        
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
 @app.route('/create_endo_folder')
 def create_endo_folder():
     endo_status = check_endo_folder()
     try:
-        os.makedirs(endo_status['full_path'], exist_ok=True)
+        # Uploads folder is always available
         return jsonify({
             'status': 'success',
-            'message': endo_status['folder_name'],
+            'message': 'Uploads folder ready',
             'path': endo_status['full_path']
         })
     except Exception as e:

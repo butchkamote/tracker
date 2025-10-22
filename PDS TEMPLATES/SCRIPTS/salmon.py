@@ -19,31 +19,50 @@ day = today.strftime('%d')
 date_str = today.strftime('%Y_%m_%d')
 month_day = f"{month_abbr.lower()}_{day}"
 
-# --- MAIN PATHS ---
-base_dir = r"C:\Users\Windows 11Pro\OneDrive\DA_PROCESS"
-month_dir = os.path.join(base_dir, month_full)
-endo_base = os.path.join(month_dir, "ENDO_FILE_MAYA")
+# =====================================
+# 📁 UPDATED PATHS FOR WEB APP
+# =====================================
+# Use uploads folder instead of Windows paths
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Go up 2 levels to tracker root
+uploads_folder = os.path.join(base_dir, "uploads")
+output_folder = os.path.join(base_dir, "data", month_full, "OUTPUT_FOLDER", "PDS OUTPUT")
 
-# 🔹 Dynamic ENDO folder (e.g., ENDO_2025OCT14)
-endo_folder = f"ENDO_{year}{month_abbr}{day}"
-source_dir = os.path.join(endo_base, endo_folder)
+# Create output folder if it doesn't exist
+os.makedirs(output_folder, exist_ok=True)
 
-# 🔹 Template & Output folders
-template_path = os.path.join(endo_base, "PDS TEMPLATES", "AUTO_TEMPLATES", "Template_Fintech.xlsx")
-output_dir = os.path.join(month_dir, "OUTPUT_FOLDER\PDS OUTPUT", month_day)
+print(f"📂 Looking for SALMON files in uploads folder: {uploads_folder}")
+print(f"📂 Output will be saved to: {output_folder}")
+
+# --- UPDATED PATHS FOR WEB APP ---
+# Source files come from uploads folder
+source_dir = uploads_folder
+
+# 🔹 Template path (using existing template in repo)
+template_path = os.path.join(base_dir, "PDS TEMPLATES", "AUTO_TEMPLATES", "Template_Fintech.xlsx")
+
+# 🔹 Output folder - create monthly subfolder
+output_dir = os.path.join(output_folder, month_day)
 os.makedirs(output_dir, exist_ok=True)
 
 print(f"📅 Date: {today.strftime('%B %d, %Y')}")
-print(f"📂 Expected ENDO folder: {source_dir}")
+print(f"📂 Looking for SALMON files in: {source_dir}")
+print(f"📂 Output will be saved to: {output_dir}")
 
 # =====================================
-# 🧩 CHECK OR CREATE ENDO FOLDER
+# 🧩 CHECK FOR UPLOADED FILES
 # =====================================
 if not os.path.exists(source_dir):
     os.makedirs(source_dir, exist_ok=True)
-    print(f"⚠️ No ENDO folder found — created {endo_folder}.")
-    print("📥 Please place your SALMON files inside this folder, then rerun the script.")
-    exit()
+    print(f"⚠️ No uploads folder found - created it.")
+
+# Check for SALMON files in uploads folder
+salmon_files = [f for f in os.listdir(source_dir) if 'salmon' in f.lower() and f.endswith(('.xlsx', '.csv', '.xls'))]
+if not salmon_files:
+    print("⚠️ No SALMON files found yet inside uploads folder.")
+    print(f"📥 Please upload your SALMON files via the web interface.")
+    print("📁 Looking for files with 'salmon' in the filename.")
+else:
+    print(f"✅ Found {len(salmon_files)} SALMON file(s): {salmon_files}")
 
 # =====================================
 # 🔍 FIND SALMON FILES (MULTIPLE FILES SUPPORT)

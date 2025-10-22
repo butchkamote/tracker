@@ -13,31 +13,27 @@ day = today.strftime('%d')
 date_str = today.strftime('%Y_%m_%d')
 month_day = f"{month_abbr.lower()}_{day}"
 
-# --- MAIN PATHS ---
-base_dir = r"C:\Users\Windows 11Pro\OneDrive\DA_PROCESS"
-month_dir = os.path.join(base_dir, month_full)
-endo_base = os.path.join(month_dir, "ENDO_FILE_MAYA")
+# =====================================
+# 📁 UPDATED PATHS FOR WEB APP
+# =====================================
+# Use uploads folder instead of Windows paths
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Go up 2 levels to tracker root
+uploads_folder = os.path.join(base_dir, "uploads")
+output_folder = os.path.join(base_dir, "data", month_full, "OUTPUT_FOLDER", "PDS OUTPUT")
 
-# 🔹 Dynamic ENDO folder (e.g., ENDO_2025OCT14)
-endo_folder = f"ENDO_{year}{month_abbr}{day}"
-source_dir = os.path.join(endo_base, endo_folder)
+# Create output folder if it doesn't exist
+os.makedirs(output_folder, exist_ok=True)
+os.makedirs(uploads_folder, exist_ok=True)
 
-# 🔹 Template & Output folders
-template_path = os.path.join(endo_base, "PDS TEMPLATES", "AUTO_TEMPLATES", "Template_Fintech.xlsx")
-output_dir = os.path.join(month_dir, "OUTPUT_FOLDER\PDS OUTPUT", month_day)
+# --- UPDATED PATHS FOR WEB APP ---
+source_dir = uploads_folder
+template_path = os.path.join(base_dir, "PDS TEMPLATES", "AUTO_TEMPLATES", "Template_Fintech.xlsx")
+output_dir = os.path.join(output_folder, month_day)
 os.makedirs(output_dir, exist_ok=True)
 
 print(f"📅 Date: {today.strftime('%B %d, %Y')}")
-print(f"📂 Expected ENDO folder: {source_dir}")
-
-# =====================================
-# 🧩 CHECK OR CREATE ENDO FOLDER
-# =====================================
-if not os.path.exists(source_dir):
-    os.makedirs(source_dir, exist_ok=True)
-    print(f"⚠️ No ENDO folder found — created {endo_folder}.")
-    print("📥 Please place your HONEYLOAN files inside this folder, then rerun the script.")
-    exit()
+print(f"📂 Looking for HONEYLOAN files in: {source_dir}")
+print(f"📂 Output will be saved to: {output_dir}")
 
 # =====================================
 # 🔍 FIND HONEYLOAN FILES (MULTIPLE FILES SUPPORT)
@@ -47,6 +43,15 @@ for file in os.listdir(source_dir):
     if "honeyloan" in file.lower() or "honey_loan" in file.lower() or "honey loan" in file.lower():
         if file.endswith(".xlsx") or file.endswith(".csv"):
             honeyloan_files.append(os.path.join(source_dir, file))
+
+if not honeyloan_files:
+    print("⚠️ No HONEYLOAN files found yet inside uploads folder.")
+    print(f"📥 Please upload your HONEYLOAN files via the web interface.")
+    print("📁 Looking for files with 'honeyloan', 'honey_loan', or 'honey loan' in the filename.")
+else:
+    print(f"✅ Found {len(honeyloan_files)} HONEYLOAN file(s)")
+    for file in honeyloan_files:
+        print(f"   - {os.path.basename(file)}")
 
 if not honeyloan_files:
     print("⚠️ No HONEYLOAN files found yet inside ENDO folder.")

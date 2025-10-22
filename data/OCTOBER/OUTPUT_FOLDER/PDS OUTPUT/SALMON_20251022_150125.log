@@ -1,0 +1,19 @@
+Campaign: SALMON
+Script: C:\Users\Windows 11Pro\OneDrive\DA_PROCESS\tracker\PDS TEMPLATES\SCRIPTS\salmon.py
+Working Directory: C:\Users\Windows 11Pro\OneDrive\DA_PROCESS\tracker\PDS TEMPLATES\SCRIPTS
+Execution Time: 2025-10-22 15:01:25
+Return Code: 0
+==================================================
+STDOUT:
+📅 Date: October 22, 2025
+📂 Expected ENDO folder: C:\Users\Windows 11Pro\OneDrive\DA_PROCESS\OCTOBER\ENDO_FILE_MAYA\ENDO_2025OCT22
+✅ Found SALMON files: ['C:\\Users\\Windows 11Pro\\OneDrive\\DA_PROCESS\\OCTOBER\\ENDO_FILE_MAYA\\ENDO_2025OCT22\\SALMON_20251022.xlsx']
+🔹 Processing: SALMON_20251022.xlsx
+✅ Combined SALMON file saved: C:\Users\Windows 11Pro\OneDrive\DA_PROCESS\OCTOBER\OUTPUT_FOLDER\PDS OUTPUT\oct_22\Template_Fintech_SALMON_2025_10_22.xlsx
+✅ You can now upload this file to the PDS portal.
+✅ Script completed successfully!
+
+==================================================
+STDERR:
+C:\Users\Windows 11Pro\OneDrive\DA_PROCESS\tracker\PDS TEMPLATES\SCRIPTS\salmon.py:33: SyntaxWarning: invalid escape sequence '\P'
+  output_dir = os.path.join(month_dir, "OUTPUT_FOLDER\PDS OUTPUT", month_day)
